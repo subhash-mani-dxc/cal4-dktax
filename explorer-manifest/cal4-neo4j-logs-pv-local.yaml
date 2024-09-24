@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: neo4j-logs-pv
+  labels:
+    app: neo4j-logs
+    type: local
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: "/apps/kube-pv/data-explorer/neo4j-logs"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - cal4-worker1-dk
+  claimRef:
+    name: neo4j-logs-pvc
+    namespace: dk-tax

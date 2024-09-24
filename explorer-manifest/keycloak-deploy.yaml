@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-service
+  namespace: dk-tax
+spec:
+  selector:
+    app: keycloak
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 31323
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-logs-pvc
+  namespace: dk-tax
+  labels:
+    app: keycloak
+    tier: keycloak
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-data-pvc
+  namespace: dk-tax
+  labels:
+    app: keycloak
+    tier: keycloak
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: dk-tax
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: dk-harbor.eastus.cloudapp.azure.com/dk-tax/keycloak:v1
+          env:
+            - name: DS_KEYCLOAK_DRIVER
+              value: 'mysql'
+            - name: DS_KEYCLOAK_URL
+              value: 'jdbc:mysql://dktax-cal4.eastus.cloudapp.azure.com:30255/keycloak?useLegacyDatetimeCode=false&serverTimezone=UTC'
+            - name: DS_KEYCLOAK_USER
+              value: 'keycloak'
+            - name: DS_KEYCLOAK_PASSWORD
+              value: 'keycloak'
+            - name: KEYCLOAK_ADMIN
+              value: 'admin'
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: '3Bramme3'
+            - name: KC_PROXY
+              value: 'edge'
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: keycloak-data
+              mountPath: /opt/keycloak/standalone/data
+            - name: keycloak-logs
+              mountPath: /var/log/keycloak
+#          readinessProbe:
+#            httpGet:
+#              path: /realms/master
+#              port: 8080
+      volumes:
+        - name: keycloak-data
+          persistentVolumeClaim:
+            claimName: keycloak-data-pvc
+        - name: keycloak-logs
+          persistentVolumeClaim:
+            claimName: keycloak-logs-pvc
