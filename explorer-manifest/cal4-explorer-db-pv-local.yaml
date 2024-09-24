@@ -23,5 +23,5 @@ spec:
           values:
           - cal4-worker-dk
   claimRef:
-    namespace: dk-tx
+    namespace: dk-tax
     name: explorer-db-pvc
