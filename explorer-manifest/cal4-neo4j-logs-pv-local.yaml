@@ -13,7 +13,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: "/apps/kube-pv/data-explorer/neo4j-logs"
+    path: "/pv/explorer/neo4j-logs"
   nodeAffinity:
     required:
       nodeSelectorTerms:
