@@ -21,7 +21,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - cal4-worker1-dk
+          - cal4-worker-dk
   claimRef:
     name: neo4j-logs-pvc
     namespace: dk-tax
