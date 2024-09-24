@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tep-backend-config
+  namespace: dk-tax
+data:
+  DB_HOST: "dktax-cal4.eastus.cloudapp.azure.com"
+  DB_PORT: "31322"
+  DB_NAME: "zerotouch"
+  DB_USERNAME: "sa"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tep-backend
+  namespace: dk-tax
+spec:
+  selector:
+    matchLabels:
+      app: tep-backend
+      tier: backend
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: tep-backend
+        tier: backend
+    spec:
+      containers:
+        - name: tep-backend
+          image: dk-harbor.eastus.cloudapp.azure.com/dk-tax/tepcore-dktax:v2
+          ports:
+          - containerPort: 8080
+          env:
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: tep-backend-config
+                key: DB_HOST
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: tep-backend-config
+                key: DB_PORT
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: tep-backend-config
+                key: DB_NAME
+          - name: DB_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: tep-backend-config
+                key: DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mssql
+                key: MSSQL_SA_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-tep-service
+  namespace: dk-tax
+spec:
+  type: NodePort
+  selector:
+    app: tep-backend
+    tier: backend
+  ports:
+      # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+    - port: 8080
+      targetPort: 8080
+      nodePort: 31047
