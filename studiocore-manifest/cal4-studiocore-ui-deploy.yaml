@@ -33,6 +33,6 @@ spec:
     spec:
       containers:
       - name: studiocore-forntend
-        image: dk-harbor.eastus.cloudapp.azure.com/dk-tax/studio-core-ui-dktax:v1
+        image: dk-harbor.eastus.cloudapp.azure.com/dk-tax/studio-core-ui-dktax:v4
         ports:
         - containerPort: 8080
