@@ -19,7 +19,7 @@ spec:
           done
           echo "SQL Server started."
           echo "Running the script..."
-          /opt/mssql-tools/bin/sqlcmd -S dktax-cal4.eastus.cloudapp.azure.com,31748 -U sa -P $MSSQL_SA_PASSWORD -i /scripts/sdp/3-UserDefinedTypes.sql
+          /opt/mssql-tools/bin/sqlcmd -S dktax-cal4.eastus.cloudapp.azure.com,31748 -U sa -P $MSSQL_SA_PASSWORD -i /scripts/sdp/3_User_Defined_Types.sql
         env:
         - name: MSSQL_SA_PASSWORD
           valueFrom:
