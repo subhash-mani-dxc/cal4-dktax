@@ -18,20 +18,6 @@ spec:
       nodeSelectorTerms:
       - matchExpressions:
         - key: kubernetes.io/hostname
-         operator: In
+          operator: In
           values:
           - cal4-worker-dk
----
-#apiVersion: v1
-#kind: PersistentVolume
-#metadata:
-#  name: sdp-pv
-#spec:
-#  capacity:
-#    storage: 10Gi
-#  accessModes:
-#    - ReadWriteOnce
-#  persistentVolumeReclaimPolicy: Retain
-#  storageClassName: local-storage
-#  hostPath:
-#    path: /apps/kube-pv/data-sdp
