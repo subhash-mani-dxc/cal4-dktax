@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sdp-db-6-storedprocedures-job
+  namespace: dk-tax
+spec:
+  template:
+    metadata:
+      labels:
+        job-type: sdp-storedprocedures
+    spec:
+      containers:
+      - name: sdp-db-storedprocedures
+        image: dk-harbor.eastus.cloudapp.azure.com/dk-tax/custom-mssql-tools18:v1
+        command: 
+        - /bin/bash
+        - -c
+        - |
+          echo "Waiting for SQL Server to start..."
+          until /opt/mssql-tools/bin/sqlcmd -S dktax-cal4.eastus.cloudapp.azure.com,31748 -U sa -P $MSSQL_SA_PASSWORD -Q "SELECT 1;" > /dev/null 2>&1; do
+            sleep 1
+          done
+          echo "SQL Server started."
+          echo "Running the script..."
+          /opt/mssql-tools/bin/sqlcmd -S dktax-cal4.eastus.cloudapp.azure.com,31748 -U sa -P $MSSQL_SA_PASSWORD -i /scripts/sdp/6-StoredProcedures.sql
+        env:
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: MSSQL_SA_PASSWORD
+        volumeMounts:
+        - name: scripts-volume
+          mountPath: /scripts
+      volumes:
+      - name: scripts-volume
+        hostPath:
+          path: /apps/kube-pv/scripts-volume
+      restartPolicy: Never
+  backoffLimit: 4
