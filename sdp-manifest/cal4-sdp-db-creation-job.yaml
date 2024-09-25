@@ -19,7 +19,7 @@ spec:
           done
           echo "SQL Server started."
           echo "Running the script..."
-          /opt/mssql-tools/bin/sqlcmd -S dktax-cal4.eastus.cloudapp.azure.com,31748 -U sa -P $MSSQL_SA_PASSWORD -i /scripts/1_Schema_Script.sql
+          /opt/mssql-tools/bin/sqlcmd -S dktax-cal4.eastus.cloudapp.azure.com,31748 -U sa -P $MSSQL_SA_PASSWORD -i /scripts/sdp/1_Schema_Script.sql
         env:
         - name: MSSQL_SA_PASSWORD
           valueFrom:
