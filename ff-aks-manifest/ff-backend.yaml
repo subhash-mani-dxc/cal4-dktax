@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: studiofactoryws
+  namespace: dev
+  labels:
+    app: studiofactoryws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: studiofactoryws
+  template:
+    metadata:
+      labels:
+        app: studiofactoryws
+    spec:
+      containers:
+      - name: studiofactoryws
+        image: modstudiocrpoc.azurecr.io/studiofactoryws:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: studiofactoryws-service
+  namespace: dev
+  labels:
+    app: studiofactoryws
+spec:
+  selector:
+    app: studiofactoryws
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: NodePort
