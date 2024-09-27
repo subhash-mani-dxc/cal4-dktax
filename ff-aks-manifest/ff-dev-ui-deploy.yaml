@@ -9,7 +9,7 @@ data:
   KEYCLOAKCONFIGREALM: "dxcstudio"
   KEYCLOAKCONFIGCLIENTID: "dxcstudioui"
   PRODUCTION: "true"
-  BASE_URI: "http://205.239.215.34:31891"
+  BASE_URI: "http://172.206.210.42:31696"
 ---
 apiVersion: apps/v1
 kind: Deployment
